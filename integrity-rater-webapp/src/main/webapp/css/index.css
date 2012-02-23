@@ -1,0 +1,30 @@
+/***************************************************************************************************************************
+	Homepage
+ ***************************************************************************************************************************/
+
+body.homepage {height:100%;}
+.homepage #page_wrap {background:url(../img/bg_body_btm_home.jpg) repeat-x 0px 615px; height:100%; padding-bottom:40px;}
+img.bg_home {position:relative; z-index:1;}
+
+/* Search Box */
+#searchBox {background:transparent url(../img/bg_home_search.png) repeat 0px 0px; left:49px; padding:25px 23px 25px 25px; position:absolute; top:275px; width:350px; z-index:1000;}
+#searchBox form {background:#CCC; margin-bottom:18px; padding:6px;}
+#searchBox h4 {color:#FFF; font:14px/18px arial, helvetica, sans-serif; margin-bottom:16px;}
+#searchBox p {color:#FFF; font:15px/18px arial, helvetica, sans-serif; margin-bottom:16px;}
+#searchBox input.searchZip {color:#a2a2a2; float:left; font-style:italic; font-size:14px; line-height:17px; margin-right:7px; width:189px;}
+#searchBox input#submitButton {background:url("../img/btn_get_the_proof.gif") no-repeat left top transparent; border:none; color:#ccd7d7; cursor:pointer; float:left; font-size:16px; height:30px; line-height:16px; overflow:hidden; text-align:center; width:136px;}
+
+.modal-overlay{display:none; position:fixed; top:0px; right:0px; bottom:0px; left:0px; height:100%; width:100%; margin:0px; padding:0px 0px 0px 0px; background:#000; opacity:.75; -moz-opacity: 0.75; z-index:1001; zoom:1; -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=70)"; filter: alpha(opacity=70);}
+
+#searchBoxLoading {height:130px; padding:25px 23px 25px 25px; position:fixed; top:50px; left:50px; text-align:center; width:360px; z-index:10020; zoom:1;}
+#searchBoxLoading p {color:#FFF; font-size:19px; margin-bottom:30px;}
+
+/* Begin homepage hospital drop-down code */
+#hospitalsBox {height:30px;	position:relative; width:202px;}
+.dropDownLabel {background:url(../img/btn_home_steward_hospitals.gif) no-repeat 0px 0px; cursor:pointer; padding:0px; font-size:small; 	width:202px;	height:30px;	text-indent:-5000px; display:block;}
+.dropDownLabelActive {background:url(../img/btn_home_steward_hospitals.gif) no-repeat 0px -30px; cursor:pointer; padding:0px; font-size:small; 	width:202px;	height:30px;	text-indent:-5000px; display:block;}
+.dropDownList {background:transparent url(../img/bg_top_nav_hospitals.png) repeat 0px 0px; display:none; left:0px; padding:5px 0px 15px; position:absolute; white-space:nowrap; width: 285px; z-index:1000;}
+.dropDownList li {cursor:pointer; display:block; padding:0px 0px 0px 4px; text-align:left;}
+.dropDownList li a {color: #DBDCDB; display: block; font-size:12px; padding: 5px 10px; text-decoration: none;}
+.dropDownList li a:hover {color: #fff;}
+/* End drop-down code */
