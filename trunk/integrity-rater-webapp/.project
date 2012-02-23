@@ -1,0 +1,17 @@
+<projectDescription>
+  <name>integrityrater-web</name>
+  <comment/>
+  <projects>
+    <project>catamaran-core</project>
+    <project>catamaran-mvc</project>
+    <project>catamaran-tomc</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>

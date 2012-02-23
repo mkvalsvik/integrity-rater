@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+ xmlns:context="http://www.springframework.org/schema/context"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans.xsd
+ http://www.springframework.org/schema/context
+ http://www.springframework.org/schema/context/spring-context.xsd ">
+
+<!-- Load environment-specific properties such as database ports and passwords -->
+<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+
+	<!-- This setting allows us to override properties with JVM system properties OR host OS system properties -->
+	<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+	
+	<!-- Location of property file(s) -->
+    <property name="locations">
+        <list>
+            <value>classpath:default.webapp.properties</value>
+        </list>
+    </property>
+</bean>
+
+<bean id="dataSource"
+ class="org.springframework.jdbc.datasource.DriverManagerDataSource">    
+    <property name="driverClassName">
+        <value>com.mysql.jdbc.Driver</value>
+    </property>
+    <property name="url">
+        <value>${db.url}</value>
+    </property>
+    <property name="username">
+        <value>${db.username}</value>
+    </property>
+    <property name="password">
+        <value>${db.password}</value>
+    </property>
+</bean>
+
+<!-- Transaction manager for a single Hibernate SessionFactory (alternative to JTA) -->
+<bean id="transactionManager"
+ class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    <property name="sessionFactory" ref="sessionFactory"/>
+</bean>
+
+<bean id="sessionFactory"
+ class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="hibernateProperties">
+        <props>
+            <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+            <prop key="hibernate.connection.release_mode">after_transaction</prop>
+            <prop key="hibernate.c3p0.min_size">1</prop>
+            <prop key="hibernate.c3p0.max_size">1</prop>
+            <prop key="hibernate.c3p0.idle_test_period">600</prop>
+            <prop key="hibernate.c3p0.timeout">240</prop>
+            <prop key="hibernate.c3p0.max_statements">1000</prop>
+            <prop key="hibernate.c3p0.acquire_increment">1</prop>
+            <prop key="hibernate.bytecode.use_reflection_optimizer">false</prop>
+            <prop key="hibernate.hbm2ddl.auto">${db.hbm2ddl}</prop>
+            <prop key="hibernate.show_sql">false</prop>
+            <prop key="hibernate.format_sql">false</prop>
+            <prop key="hibernate.jbdc.batch_size">50</prop>
+            <prop key="hibernate.connection.autocommit">false</prop>
+            <prop key="hibernate.current_session_context_class">thread</prop>
+        </props>
+    </property>
+	
+	<!-- Tells Hibernate where to look for annotation-marked persistent entity objects -->
+    <property name="packagesToScan" value="org.integrityrater.entity"/>
+    <property name="useTransactionAwareDataSource">
+        <!-- MySAM, may want to change for InnoDB -->
+        <value>false</value>
+    </property>
+</bean>
+
+<bean id="repository"
+ class="org.integrityrater.entity.support.Repository">
+ 	<constructor-arg ref="sessionFactory"/>
+</bean>
+
+<!-- Inspired by http://joesbitbucket.blogspot.com/2006/08/how-to-inject-dependencies-into-domain.html -->
+<bean id="persistentEntityBaseServicesSetter"  
+	class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+	<property name="staticMethod">    
+		<value>org.integrityrater.entity.support.PersistentEntityBase.setServices</value>  
+	</property>  
+	<property name="arguments">    
+		<list>      
+			<ref bean="entityServices"/>    
+		</list>  
+	</property>
+</bean>
+
+<bean id="persistentEntityBaseSessionFactorySetter"  
+	class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+	<property name="staticMethod">    
+		<value>org.integrityrater.entity.support.PersistentEntityBase.setSessionFactory</value>  
+	</property>  
+	<property name="arguments">    
+		<list>      
+			<ref bean="sessionFactory"/>    
+		</list>  
+	</property>
+</bean>
+
+<bean id="entityServices"  
+	class="org.integrityrater.entity.support.EntityServices">
+	<property name="repository" ref="repository" />    
+	<property name="userContextLocator" ref="userContextLocator" />
+</bean>
+
+<bean id="userContextLocator"  
+	class="org.integrityrater.service.user.UserContextLocator">
+</bean>
+
+</beans>

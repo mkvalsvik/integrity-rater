@@ -1,0 +1,21 @@
+LATEST:
+1. Finish testing of votes. Integrate votes with UI
+2. Clean up FTL -- includes, posts, etc 
+3. Create CommentService to manage Comment object, integrate it with UI
+
+OLD LIST FOR REFERENCE
+Use cases:
+1. sign up X
+2. create complaint A against Y
+3. sign up/claim person Y
+4. challenge complaint A
+
+Next steps:
+- make an IA
+- review list below
+- voting
+- create person profile page with "add complaint" link
+- create new/edit complaint page
+- add complaint listing to homepage and to person profile
+- new view complaint page
+- new/edit/view challenge pages 
