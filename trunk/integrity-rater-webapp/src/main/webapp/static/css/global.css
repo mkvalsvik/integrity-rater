@@ -1,0 +1,149 @@
+body {
+	margin:0 0;
+	/*font-family: arial,sans-serif;*/
+	font-family: Georgia,"Times New Roman","Bitstream Vera Serif",serif;
+}
+
+
+.challengeBox h3, .challengeBox h4 {
+	color: black;
+}
+
+#complaintBox h2 {
+	font-size: 2em;
+	font-weight: normal;
+	margin-bottom: 0;
+	margin-top: 0;
+}
+
+#complaintBox h3 {
+	font-size: 1em;
+	color: #5E7185;
+	font-style: italic;
+	font-weight: normal;
+	margin-bottom: 0;
+	margin-top: 0;
+}
+
+.grey {
+	font-size: 0.9em;
+	color: #5E7185;
+}
+
+#complaintBox h4 {
+	font-size: 0.917em;
+	color: #5E7185;
+	font-weight: normal;
+	margin-top: 0;	
+	margin-bottom: 4px;
+}
+
+#complaintBox a {
+	text-decoration: none;
+	color: black; 
+}
+
+#complaintBox h3 a {
+	text-decoration: underline;
+	color: #5E7185;
+}
+
+#complaintBox h4 a {
+	text-decoration: underline;
+	color: #5E7185;
+}
+
+#complaintBox ul {
+	margin-top: 0;
+}
+
+#complaintBox p {
+	margin-top: 20px;
+}
+
+.successMessage {
+	color:blue;
+}
+
+.failureMessage {
+	color:red;
+}
+
+.fieldErrors {
+	color:red;
+}
+
+form label {display:block; float:left; margin-right:5px; padding-top:4px; text-align:right; width:150px;}
+form div {padding: 0.2em;}
+
+#bodyContent {
+	margin: 12px 12px;	
+}
+
+#leftColumn {
+	width:200px;
+	display:inline-block;
+	vertical-align:top;		
+}
+
+#leftBox1 {
+	background-color: #dddddd;
+	padding: 4px 4px;
+	margin-left: 8px;
+}
+
+#leftBox1 ol {
+	margin: 4px 0px;	
+}
+
+#mainColumn {
+	display:inline-block;
+	width:760px;	
+	/* border-right: 1px solid #C9D7F1; */
+	padding-right: 8px;
+}
+
+#complaintBox {
+	margin-top: 8px;
+}
+
+#complaintBox ul {
+	margin-left: 0px;
+	padding-left: 0px;
+}
+
+li.complaintEntry {	
+	list-style: none inside;	
+	border-bottom: 1px solid #C9D7F1;
+	/*padding-bottom: 8px;*/
+	margin-bottom: 12px;
+}
+
+.challengeBox li {	
+	list-style: none inside;	
+	border-bottom: 0;
+	/*padding-bottom: 8px;*/
+	margin-bottom: 12px;
+}
+
+.complaintAbout {
+	font-size:90%;
+}
+
+#searchBox {
+	display:inline-block;
+	width:760px;	
+	background-color: #eeeeee;
+	padding-top: 0px;
+	padding-left: 0px;
+}
+
+#searchBox p {
+	margin: 12px 0px 8px 0px;
+}
+
+/* Autocomplete options */
+.ui-menu-item {
+	font-size:70%;
+}
+
