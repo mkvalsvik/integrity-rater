@@ -40,8 +40,9 @@
     </servlet>
 
     <!-- This maps /static requests to the tomcat 'default' servlet specified in conf/web.xml which simply serves from the webapp file system -->
-    <!-- Note this maps /static to the webapp root, so you need to use a path like this: 
+    <!-- Note previously (before tomcat 6.30 or so) this mapped /static to the webapp root, so you need to use a path like this: 
     		/static/images/sample.gif if the file is located in [webapp]/images/sample.gif
+ However, now it seems to work the way you'd expect (path /static/images/sample.gif maps to [webapp]/static/images/sample.gif).
     -->
     <servlet-mapping>
         <servlet-name>default</servlet-name>
