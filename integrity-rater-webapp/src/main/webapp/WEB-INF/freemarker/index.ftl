@@ -16,6 +16,16 @@
 				<p>Showing <span id="filterName">${complaints?size} complaint<#if (complaints?size > 1)>s</#if></span> against <#if person??>${person.name} <a href="index">(show all)</a><#else>${complaintPersonCount} <#if (complaintPersonCount > 1)>people<#else>person</#if></#if></p>
 			</div>	
 			
+			<#if message??>
+				<div class="errorMessage">
+				<#if message.success>
+					<p class="successMessage">${message.text}</p>
+				<#else>
+					<p class="failureMessage">${message.text}</p>
+				</#if>
+				</div>
+			</#if>
+			
 			<!-- TODO: Move this div to an include -->
 			<div id="complaintBox">
 				<#if complaints?has_content>
