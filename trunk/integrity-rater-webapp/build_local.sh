@@ -1,6 +1,6 @@
 # Perform a maven webapp build BUT replace static web content with symlinks to the source SO THAT local file changes appear immediately
 
-WEBAPP=integrityrater-web-1.0
+WEBAPP=integrityrater-web
 
 # First remove old symlinks
 rm target/$WEBAPP/WEB-INF/freemarker

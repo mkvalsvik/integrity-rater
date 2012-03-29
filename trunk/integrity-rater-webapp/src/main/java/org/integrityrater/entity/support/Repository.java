@@ -2,6 +2,7 @@ package org.integrityrater.entity.support;
 
 import java.util.List;
 
+import org.catamarancode.type.Name;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -59,6 +60,10 @@ public class Repository extends RepositoryBase {
         crit.add(Restrictions.eq("name.first", firstName));
         crit.add(Restrictions.eq("name.last", lastName));
         return crit.list();
+    }
+    
+    public List<Person> findPersonByName(Name name) {
+        return findPersonByName(name.getFirst(), name.getLast());
     }
     
     public List<Person> findPersonByPartialLastName(String term) {

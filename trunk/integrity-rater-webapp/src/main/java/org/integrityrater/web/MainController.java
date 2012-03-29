@@ -62,11 +62,33 @@ public class MainController {
 
         String personId = request.getParameter("personId");
         String personName = request.getParameter("personName");
+        Person person = null;
         if (StringUtils.hasText(personId)) {
-            Person person = repository.loadPerson(Long.parseLong(personId));
-            mv.addObject("complaints", person.getComplaints());
-            mv.addObject("person", person);
+            person = repository.loadPerson(Long.parseLong(personId));
         } else if (StringUtils.hasText(personName)) {
+            
+            // Match name to a person in DB
+            List<String> results = personNameSearch(personName);
+            if (results.size() > 1) {
+                mv = ControllerUtils.createDefaultModelAndView(request,
+                        repository, "index-pick-name");
+                mv.addObject("matchingNames", results);
+                return mv;
+            } else if (!results.isEmpty()) {
+                String matchingName = results.iterator().next();
+                Name name = buildNameFromSearchTerm(matchingName);
+                List<Person> list = repository.findPersonByName(name);
+                if (!list.isEmpty()) {
+                    person = list.iterator().next();
+                } else {
+                    throw new RuntimeException("Matched but could not find name: " + personName);    
+                }                
+            } else {
+                Message.addToModel(mv.getModelMap(), String.format(
+                        "Person not found: %s", personName), false);                
+            }
+
+            /*
             String[] nameParts = personName.split(" ");
             List<Person> persons = null;
             if (nameParts.length > 1) {
@@ -80,11 +102,19 @@ public class MainController {
                     
             if (persons.size() > 1) {
                 logger.warn("\n\n\n*******\nMultiple matches for " + personName);
+                person = persons.iterator().next();
+            } else if (!persons.isEmpty()) {
+                person = persons.iterator().next();
+            } else {
+                Message.addToModel(mv.getModelMap(), String.format(
+                        "Person not found: %s", personName), false);
+                return mv;
             }
-            Person person = persons.iterator().next();
-            mv.addObject("complaints", person.getComplaints());
-            mv.addObject("person", person);
-        } else {
+            */
+        } 
+        
+        // Default to all complaints if a person is not specified
+        if (person == null) {
             List<Complaint> complaints = repository.listAllComplaints();
             mv.addObject("complaints", complaints);
             
@@ -98,22 +128,25 @@ public class MainController {
                 }
             }
             mv.addObject("complaintPersonCount", personCount);
+        } else {
+            mv.addObject("person", person);
+            mv.addObject("complaints", person.getComplaints());
         }
 
         // TODO: Improve speed, this is dog slow!!!
         List<Person> persons = repository.listPersons();
         List<Person> personsWithComplaints = new ArrayList<Person>();
-        for (Person person : persons) {
-            if (!person.getComplaints().isEmpty()) {
-                personsWithComplaints.add(person);
+        for (Person complaintPerson : persons) {
+            if (!complaintPerson.getComplaints().isEmpty()) {
+                personsWithComplaints.add(complaintPerson);
             }
         }
 
         // TODO: Move this offline to a scheduled process
         // Compute ratings
-        for (Person person : personsWithComplaints) {
+        for (Person complaintPerson : personsWithComplaints) {
             double score = 0;
-            for (Complaint complaint : person.getComplaints()) {
+            for (Complaint complaint : complaintPerson.getComplaints()) {
                 score = score + 2;
                 for (ComplaintVote vote : complaint.getVotes()) {
                     score = score + 1;
@@ -125,8 +158,8 @@ public class MainController {
                     }
                 }
             }
-            person.setIntegrityScore(-1 * score);
-            person.save();
+            complaintPerson.setIntegrityScore(-1 * score);
+            complaintPerson.save();
         }
 
         // Sort by scores
@@ -204,45 +237,63 @@ public class MainController {
         mv.addObject("json", jsonObj);
         return mv;
     }
-
-    @RequestMapping("/person-lookup.json")
-    public ModelAndView personLookup(HttpServletRequest request,
-            @RequestParam(required = true) String term) throws Exception {
-
-        ModelAndView mv = ControllerUtils.createDefaultModelAndView(request,
-                repository, "json-string");
-
-        // Extract first and last from search term
-        boolean firstLastDelimited = false;
+    
+    /**
+     * Builds a Name object from a term like "first last" or "last, first"
+     * @param term
+     * @return
+     */
+    private Name buildNameFromSearchTerm(String term) {
         String firstName = null;
         String lastName = null;
         int commaPos = term.indexOf(',');
         int spacePos = term.indexOf(' ');
         if (commaPos > 0) {
-            firstLastDelimited = true;
             lastName = term.substring(0, commaPos);
             if (term.length() > commaPos) {
                 firstName = term.substring(commaPos + 1);
             }
         } else if (spacePos > 0) {
-            firstLastDelimited = true;
             firstName = term.substring(0, spacePos);
             if (term.length() > spacePos) {
                 lastName = term.substring(spacePos);
             }
+        }
+        Name result = new Name();
+        if (StringUtils.hasText(firstName)) {
+            result.setFirst(firstName.trim());    
+        }
+        if (StringUtils.hasText(lastName)) {
+            result.setLast(lastName.trim());
+        }
+        return result;
+    }
+    
+    /**
+     * Searches for a person by name or partial name
+     * @param term
+     * @return an alpha sorted list of matching person names
+     */
+    private List<String> personNameSearch(String term) {
+        
+        // Extract first and last from search term
+        Name name = buildNameFromSearchTerm(term);
+        boolean firstLastDelimited = false;
+        if (StringUtils.hasText(name.getFirst()) && StringUtils.hasText(name.getLast())) {
+            firstLastDelimited = true;
         }
 
         // Perform DB search
         List<String> results = new ArrayList<String>();
         if (firstLastDelimited) {
             List<Person> persons = Collections.EMPTY_LIST;
-            if (firstName != null && lastName != null) {
-                persons = repository.findPersonByPartialName(firstName,
-                        lastName);
-            } else if (firstName != null) {
-                persons = repository.findPersonByPartialFirstName(firstName);
-            } else if (lastName != null) {
-                persons = repository.findPersonByPartialLastName(lastName);
+            if (name.getFirst() != null && name.getLast() != null) {
+                persons = repository.findPersonByPartialName(name.getFirst(),
+                        name.getLast());
+            } else if (name.getFirst() != null) {
+                persons = repository.findPersonByPartialFirstName(name.getFirst());
+            } else if (name.getLast() != null) {
+                persons = repository.findPersonByPartialLastName(name.getLast());
             }
             for (Person person : persons) {
                 results.add(person.getName().asFullName());
@@ -266,6 +317,18 @@ public class MainController {
 
         // Sort the list
         Collections.sort(results);
+        
+        return results;
+    }
+
+    @RequestMapping("/person-lookup.json")
+    public ModelAndView personLookup(HttpServletRequest request,
+            @RequestParam(required = true) String term) throws Exception {
+
+        ModelAndView mv = ControllerUtils.createDefaultModelAndView(request,
+                repository, "json-string");
+
+        List<String> results = personNameSearch(term);
 
         // Build results
         JSONArray json = new JSONArray();
