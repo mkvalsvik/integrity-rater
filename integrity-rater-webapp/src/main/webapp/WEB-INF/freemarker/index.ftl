@@ -12,8 +12,18 @@
 	
 		<div id="mainColumn">
 			<div id="searchBox">
-				<form><input size="24" type="text" id="autocomplete" value="Enter a name.." />&nbsp;<input class="button" type="submit" value="Search"/></form>
-				<p>Showing <span id="filterName">${complaints?size} complaint<#if (complaints?size > 1)>s</#if></span> against <#if person??>${person.name} <a href="index">(show all)</a><#else>${complaintPersonCount} <#if (complaintPersonCount > 1)>people<#else>person</#if></#if></p>
+				<form>
+					<input size="24" type="text" id="autocomplete" value="Enter a name.." />&nbsp;
+					<input class="button" type="submit" value="Search"/>
+				</form>
+				<p>
+					Showing <span id="filterName">${complaints?size} complaint<#if (complaints?size > 1)>s</#if></span> against 
+						<#if person??>
+							${person.name} <a href="index">(show everyone)</a><br/>
+							<span class="entryMenu"><a href="complaint-edit?personId=${person.id?c}">File a new complaint</a><#if !person.user> | <a href="signup?subject=${person.id}">Claim ${person.name}</a></#if></span>
+						<#else>${complaintPersonCount} <#if (complaintPersonCount > 1)>people<#else>person</#if>
+						</#if>
+				</p>
 			</div>	
 			
 			<#if message??>
