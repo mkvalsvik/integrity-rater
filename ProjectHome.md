@@ -1,0 +1,1 @@
+Sort of like a group-edited blog.  But with a focus on "catching" or "exposing" people who engage in deception or other low-integrity activities.  User-provided content (wikipedia) meets fact checkers like politifact.com.
